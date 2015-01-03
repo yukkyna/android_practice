@@ -10,13 +10,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 
 public class MainActivity extends ActionBarActivity
         implements LoaderManager.LoaderCallbacks<ItemList>, SearchView.OnQueryTextListener {
+
+    private CustomListItemAdapter searchResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +30,10 @@ public class MainActivity extends ActionBarActivity
 
         SearchView sv = (SearchView)this.findViewById(R.id.searchView);
         sv.setOnQueryTextListener(this);
+
+        ListView lv = (ListView)this.findViewById(R.id.listView);
+        this.searchResults = new CustomListItemAdapter(this, new ItemList());
+        lv.setAdapter(this.searchResults);
     }
 
     @Override
@@ -98,10 +107,11 @@ public class MainActivity extends ActionBarActivity
     public void onLoadFinished(Loader<ItemList> objectLoader, ItemList o) {
         Log.d("MainActivity", "onLoadFinished");
         if (o != null) {
-            int num = o.size();
-            for (int i = 0; i < num; i ++) {
-                Log.d("", o.get(i).trackName);
-            }
+            this.searchResults.addAll(o);
+//            int num = o.size();
+//            for (int i = 0; i < num; i ++) {
+//                Log.d("", o.get(i).trackName);
+//            }
         }
     }
 
