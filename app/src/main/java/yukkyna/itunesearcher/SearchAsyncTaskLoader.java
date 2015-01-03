@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
@@ -65,6 +66,8 @@ public class SearchAsyncTaskLoader extends AsyncTaskLoader<ItemList> {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         } finally {
             if (isr != null) {

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -39,6 +40,8 @@ public class CustomListItemAdapter extends ArrayAdapter<ItemDto> {
         ItemDto item = getItem(position);
         TextView text1 = (TextView)view.findViewById(R.id.TV_TITLE);
         text1.setText(item.trackName);
+        ImageView iv = (ImageView)view.findViewById(R.id.IV_THUMBNAIL);
+        iv.setImageBitmap(item.artworkUrl100);
 //        TextView text2 = (TextView) view.findViewById(R.id.SubTitleText);
 //        text2.setText("SubTitle:" + item);
 
