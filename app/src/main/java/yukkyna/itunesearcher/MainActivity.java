@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity
-        implements LoaderManager.LoaderCallbacks<String>, SearchView.OnQueryTextListener {
+        implements LoaderManager.LoaderCallbacks<ItemList>, SearchView.OnQueryTextListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,9 @@ public class MainActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
+    // ---------------------------------------------------------------------------------------------
     // Search View
+    // ---------------------------------------------------------------------------------------------
     @Override
     public boolean onQueryTextSubmit(String query) {
         Log.d("onQueryTextSubmit", query);
@@ -58,7 +60,7 @@ public class MainActivity extends ActionBarActivity
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getActiveNetworkInfo();
         if (info.isConnected()) {
-            Toast.makeText(this, info.getTypeName() + " connected", Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, info.getTypeName() + " connected", Toast.LENGTH_LONG).show();
 
             TextView tv = (TextView)this.findViewById(R.id.textView);
             tv.setText(this.getString(R.string.search_result) + query);
@@ -67,10 +69,8 @@ public class MainActivity extends ActionBarActivity
             LoaderManager manager = getSupportLoaderManager();
             Bundle bundle = new Bundle();
             manager.initLoader(0, bundle, MainActivity.this);
-
-
         } else {
-            Toast.makeText(this, "not connected", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "isConnected = false", Toast.LENGTH_LONG).show();
         }
 
         return false;
@@ -81,9 +81,11 @@ public class MainActivity extends ActionBarActivity
         return false;
     }
 
+    // ---------------------------------------------------------------------------------------------
     // Loader
+    // ---------------------------------------------------------------------------------------------
     @Override
-    public Loader<String> onCreateLoader(int i, Bundle bundle) {
+    public Loader<ItemList> onCreateLoader(int i, Bundle bundle) {
 //        Log.d("", "onCreateLoader");
         if (i == 0) {
 //            Log.d("", "create task");
@@ -93,12 +95,18 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    public void onLoadFinished(Loader<String> objectLoader, String o) {
-        Log.d("a", o);
+    public void onLoadFinished(Loader<ItemList> objectLoader, ItemList o) {
+        Log.d("MainActivity", "onLoadFinished");
+        if (o != null) {
+            int num = o.size();
+            for (int i = 0; i < num; i ++) {
+                Log.d("", o.get(i).trackName);
+            }
+        }
     }
 
     @Override
-    public void onLoaderReset(Loader<String> objectLoader) {
+    public void onLoaderReset(Loader<ItemList> objectLoader) {
 
     }
 }

@@ -4,6 +4,10 @@ import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,17 +19,17 @@ import java.net.URL;
 /**
  * Created by yukkyna on 2015/01/03.
  */
-public class SearchAsyncTaskLoader extends AsyncTaskLoader<String> {
+public class SearchAsyncTaskLoader extends AsyncTaskLoader<ItemList> {
 
-    private String mCachedData;
+    private ItemList mCachedData;
 
     public SearchAsyncTaskLoader(Context context) {
         super(context);
     }
 
     @Override
-    public String loadInBackground() {
-//        Log.d("SearchAsyncTaskLoader", "loadInBackground");
+    public ItemList loadInBackground() {
+        Log.d("SearchAsyncTaskLoader", "loadInBackground");
         URL url = null;
         HttpURLConnection con = null;
         InputStreamReader isr = null;
@@ -46,11 +50,21 @@ public class SearchAsyncTaskLoader extends AsyncTaskLoader<String> {
                 }
                 sb.append(buf, 0, len);
             }
-//            Log.d("", sb.toString());
-            return sb.toString();
+
+            // レスポンスをパーすする
+            ItemList list = new ItemList();
+            JSONObject json = new JSONObject(sb.toString());
+            int num = json.getInt("resultCount");
+            JSONArray results = json.getJSONArray("results");
+            for (int i = 0; i < num; i ++) {
+                list.add(new ItemDto(results.getJSONObject(i)));
+            }
+            return list;
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         } finally {
             if (isr != null) {
@@ -69,7 +83,7 @@ public class SearchAsyncTaskLoader extends AsyncTaskLoader<String> {
     }
 
     @Override
-    public void deliverResult(String data) {
+    public void deliverResult(ItemList data) {
         // ローダがリセットされ、そのローダのライフサイクルが終了となる場合
         if (isReset()) {
             // キャッシュデータがある場合は、キャッシュを削除して、メモリから破棄可能にする
