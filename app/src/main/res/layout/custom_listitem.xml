@@ -6,13 +6,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/IV_THUMBNAIL"
-        android:contentDescription="thumbnail" />
+        android:contentDescription="@string/thumbnail" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
         android:id="@+id/TV_TITLE"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/IV_THUMBNAIL" />
+        android:layout_toEndOf="@+id/IV_THUMBNAIL"
+        android:contentDescription="@string/listitem_title" />
 </RelativeLayout>
