@@ -1,38 +1,27 @@
 package yukkyna.itunesearcher;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 
-import org.apache.http.util.ByteArrayBuffer;
-
-import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
 
 /**
- * TODO: document your custom view class.
+ * Web上の画像表示に対応したImageView
  */
 public class WebImageView extends ImageView {
 
     private String webUrl;
+    private DownloadTask task;
 
     public WebImageView(Context context) {
         super(context);
@@ -48,7 +37,12 @@ public class WebImageView extends ImageView {
 
     public void setWebUrl(String url) {
         this.webUrl = url;
-        DownloadTask task = new DownloadTask();
+        this.setImageResource(R.drawable.loading);
+        if (this.task != null) {
+//            task.cancel(false);
+            task.cancel(true);
+        }
+        this.task = new DownloadTask();
         task.execute(url);
     }
 
@@ -56,6 +50,7 @@ public class WebImageView extends ImageView {
         @Override
         protected Bitmap doInBackground(String... params) {
             try {
+                // TODO cancelするとBitmapFactory.decodeStreamでInterruptedIOExceptionが発生する
                 URL url = new URL(params[0]);
                 InputStream is = url.openStream();
                 Bitmap d = BitmapFactory.decodeStream(is);
@@ -73,9 +68,16 @@ public class WebImageView extends ImageView {
 //                }
 //                byte[] imageData = baf.toByteArray();
 //                return BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
-            } catch (Exception e) {
-                e.printStackTrace();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+            } catch (InterruptedIOException e) {
+
+            } catch (IOException e) {
+//                e.printStackTrace();
             }
+
             return null;
         }
 
@@ -83,11 +85,11 @@ public class WebImageView extends ImageView {
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
             Log.d("WebImageView", "onPostExecute");
-            setImageBitmap(bitmap);
-//            mImage = new BitmapDrawable(bitmap);
-//            if (mImage != null) {
-//                setImageDrawable(mImage);
-//            }
+            if (bitmap != null) {
+                setImageBitmap(bitmap);
+            } else {
+                setImageResource(R.drawable.loading);
+            }
         }
     }
 }
