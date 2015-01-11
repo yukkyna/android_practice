@@ -8,5 +8,6 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="thumbnail">thumbnail</string>
     <string name="listitem_title">title</string>
+    <string name="detail_title">title</string>
 
 </resources>

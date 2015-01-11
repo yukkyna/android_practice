@@ -1,6 +1,7 @@
 package yukkyna.itunesearcher;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.LoaderManager;
@@ -10,6 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -19,7 +22,7 @@ import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity
-        implements LoaderManager.LoaderCallbacks<ItemList>, SearchView.OnQueryTextListener {
+        implements LoaderManager.LoaderCallbacks<ItemList>, SearchView.OnQueryTextListener, AdapterView.OnItemClickListener {
 
     private CustomListItemAdapter searchResults;
 
@@ -34,6 +37,7 @@ public class MainActivity extends ActionBarActivity
         ListView lv = (ListView)this.findViewById(R.id.listView);
         this.searchResults = new CustomListItemAdapter(this, new ItemList());
         lv.setAdapter(this.searchResults);
+        lv.setOnItemClickListener(this);
     }
 
     @Override
@@ -95,9 +99,7 @@ public class MainActivity extends ActionBarActivity
     // ---------------------------------------------------------------------------------------------
     @Override
     public Loader<ItemList> onCreateLoader(int i, Bundle bundle) {
-//        Log.d("", "onCreateLoader");
         if (i == 0) {
-//            Log.d("", "create task");
             return new SearchAsyncTaskLoader(this);
         }
         return null;
@@ -108,15 +110,24 @@ public class MainActivity extends ActionBarActivity
         Log.d("MainActivity", "onLoadFinished");
         if (o != null) {
             this.searchResults.addAll(o);
-//            int num = o.size();
-//            for (int i = 0; i < num; i ++) {
-//                Log.d("", o.get(i).trackName);
-//            }
         }
     }
 
     @Override
     public void onLoaderReset(Loader<ItemList> objectLoader) {
 
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // ListView
+    // ---------------------------------------------------------------------------------------------
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d("", Integer.toString(position));
+
+        Intent intent = new Intent(this, DetailActivity.class);
+        ItemDto item = (ItemDto)parent.getItemAtPosition(position);
+        intent.putExtra("item", item);
+        this.startActivity(intent);
     }
 }

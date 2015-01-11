@@ -1,6 +1,9 @@
 package yukkyna.itunesearcher;
 
+import android.app.LoaderManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +11,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -38,12 +45,25 @@ public class CustomListItemAdapter extends ArrayAdapter<ItemDto> {
         }
 
         ItemDto item = getItem(position);
-        TextView text1 = (TextView)view.findViewById(R.id.TV_TITLE);
+        TextView text1 = (TextView)view.findViewById(R.id.listitem_title);
         text1.setText(item.trackName);
-        ImageView iv = (ImageView)view.findViewById(R.id.IV_THUMBNAIL);
-        iv.setImageBitmap(item.artworkUrl100);
-//        TextView text2 = (TextView) view.findViewById(R.id.SubTitleText);
-//        text2.setText("SubTitle:" + item);
+        WebImageView iv = (WebImageView)view.findViewById(R.id.listitem_webthumb);
+        iv.setWebUrl(item.artworkUrl100);
+
+
+//        LoaderManager manager = this.
+//        try {
+//            // TODO 後始末
+//            URL url = new URL(item.artworkUrl100);
+//            InputStream is = url.openStream();
+//            Bitmap d = BitmapFactory.decodeStream(is);
+//            is.close();
+//            iv.setImageBitmap(d);
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         return view;
     }
